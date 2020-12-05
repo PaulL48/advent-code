@@ -11,7 +11,7 @@ fn character_counts(string: &str) -> HashMap<char, i32> {
     return character_counts;
 }
 
-fn is_password_valid(line: &str) -> bool {
+fn password_is_valid(line: &str) -> bool {
     let tokens: Vec<&str> = line
         .split(&['-', ' ', ':'][..])
         .filter(|token| !token.is_empty())
@@ -23,15 +23,6 @@ fn is_password_valid(line: &str) -> bool {
         tokens[3],
     );
     let character_counts = character_counts(password);
-    println!(
-        "min {}, max {}, char {}, pwd {}, valid: {}",
-        min,
-        max,
-        character,
-        password,
-        *character_counts.get(&character).unwrap_or(&0) >= min
-            && *character_counts.get(&character).unwrap_or(&0) <= max
-    );
     return min <= *character_counts.get(&character).unwrap_or(&0)
         && *character_counts.get(&character).unwrap_or(&0) <= max;
 }
@@ -41,12 +32,12 @@ fn main() {
     let filename = &args[1];
     let contents = fs::read_to_string(filename).expect("You gotta supply a file bro");
 
-    let mut bad_passwords = 0;
+    let mut good_passwords = 0;
     for line in contents.lines() {
-        if !is_password_valid(line) {
-            bad_passwords += 1;
+        if password_is_valid(line) {
+            good_passwords += 1;
         }
     }
 
-    println!("The number of bad passwords is {}", bad_passwords);
+    println!("Good passwords: {}", good_passwords);
 }
